@@ -15,10 +15,11 @@ int motorPinB      = A1;
 int pirPin   = 8;
 
 boolean processRunning = false;
-int minSecsBetweenEmails = 30;
+int minSecsBetweenEmails = 5;
  
 long lastSend = -minSecsBetweenEmails * 1000L;
  
+static boolean firstPass = true;
 void setup() {
   
   pinMode( powerPin, OUTPUT);
@@ -28,17 +29,28 @@ void setup() {
   pinMode( motorPinA, OUTPUT);
   pinMode( motorPinB, OUTPUT);
   
+  pinMode( pirPin, INPUT);
+  
   //keep motors turned off
   digitalWrite(motorPinA, HIGH);
   digitalWrite(motorPinB, LOW);
+  
+  digitalWrite(rewindPin, LOW);
+  
+  //player off
+  digitalWrite(powerPin, LOW);
+  delay(500);
   //player on
   digitalWrite(powerPin, HIGH);
   
-  digitalWrite(pausePlayPin, HIGH);
-  delay(1000);
+  delay(3000);
+
+  //player pause  
   digitalWrite(pausePlayPin, LOW);
-  
-  pinMode( pirPin, INPUT);
+  delay(500);
+  digitalWrite(pausePlayPin, HIGH);
+  delay(500);
+  digitalWrite(pausePlayPin, LOW);
 
 }
 
@@ -54,24 +66,40 @@ void loop() {
       
       delay(2000);
       
-      //turn on player
-      digitalWrite(pausePlayPin, HIGH);
-      delay(1000);
-      digitalWrite(pausePlayPin, LOW);
-      
+      if ( firstPass )
+      {
+        //play
+        //digitalWrite(pausePlayPin, LOW);
+        
+        digitalWrite(pausePlayPin, HIGH);
+        delay(400);
+        digitalWrite(pausePlayPin, LOW);
+        
+      }
+      else 
+      { 
+        //rewind - auto plays
+       digitalWrite(rewindPin, HIGH);
+       delay(400);
+       digitalWrite(rewindPin, LOW);
+        
+      }
+            
       //player is now on, wait a few seconds for advertisement to finish
-      delay(25000);
-      
-      digitalWrite(rewindPin, HIGH);
-      
-      //turn off the player now
-      //digitalWrite(powerPin, LOW);
-      
+      delay(20000);
+     
+      //pause
+      digitalWrite(pausePlayPin, HIGH);
+      delay(500);
+      digitalWrite(pausePlayPin, LOW);
+        
       //keep motors turned off
       digitalWrite(motorPinA, HIGH);
       digitalWrite(motorPinB, LOW);
       
-      delay(15000);
+      firstPass = false;
+      
+      delay(5000);
       
   }
 }
