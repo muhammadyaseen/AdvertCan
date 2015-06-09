@@ -14,6 +14,8 @@ int motorPinB      = A1;
 
 int pirPin   = 8;
 
+int trayPin  = 9;
+
 boolean processRunning = false;
 int minSecsBetweenEmails = 5;
  
@@ -25,7 +27,8 @@ void setup() {
   pinMode( powerPin, OUTPUT);
   pinMode( pausePlayPin, OUTPUT);
   pinMode( rewindPin, OUTPUT);
-  
+  pinMode( trayPin, OUTPUT);
+
   pinMode( motorPinA, OUTPUT);
   pinMode( motorPinB, OUTPUT);
   
@@ -51,6 +54,9 @@ void setup() {
   digitalWrite(pausePlayPin, HIGH);
   delay(500);
   digitalWrite(pausePlayPin, LOW);
+  
+  // tray defaults to LOW
+  digitalWrite(trayPin, LOW);
 
 }
 
@@ -73,8 +79,7 @@ void loop() {
         
         digitalWrite(pausePlayPin, HIGH);
         delay(400);
-        digitalWrite(pausePlayPin, LOW);
-        
+        digitalWrite(pausePlayPin, LOW);        
       }
       else 
       { 
@@ -84,6 +89,12 @@ void loop() {
        digitalWrite(rewindPin, LOW);
         
       }
+      
+      //open tray
+      digitalWrite( trayPin, HIGH );
+      delay(500);
+      digitalWrite( trayPin, LOW );
+      
             
       //player is now on, wait a few seconds for advertisement to finish
       delay(20000);
@@ -92,6 +103,11 @@ void loop() {
       digitalWrite(pausePlayPin, HIGH);
       delay(500);
       digitalWrite(pausePlayPin, LOW);
+      
+      //close tray
+      digitalWrite( trayPin, HIGH );
+      delay(500);
+      digitalWrite( trayPin, LOW );
         
       //keep motors turned off
       digitalWrite(motorPinA, HIGH);
@@ -99,7 +115,7 @@ void loop() {
       
       firstPass = false;
       
-      delay(5000);
+      delay(10000);
       
   }
 }
